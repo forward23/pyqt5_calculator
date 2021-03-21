@@ -9,7 +9,10 @@
 from functools import partial
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QColor, QPalette
 from PyQt5.QtWidgets import QMessageBox
+
 
 class Ui_Calculator(object):
     def setupUi(self, Calculator):
@@ -42,28 +45,28 @@ class Ui_Calculator(object):
         self.gridLayout.addWidget(self.pushButton_9, 2, 2, 1, 1)
         self.pushButton_minus = QtWidgets.QPushButton(Calculator)
         self.pushButton_minus.setObjectName("pushButton_minus")
-        self.pushButton_minus.setStyleSheet("background-color : silver")
+        self.pushButton_minus.setStyleSheet("background-color : gray")
         self.gridLayout.addWidget(self.pushButton_minus, 4, 3, 1, 1)
         self.pushButton_8 = QtWidgets.QPushButton(Calculator)
         self.pushButton_8.setObjectName("pushButton_8")
         self.gridLayout.addWidget(self.pushButton_8, 2, 1, 1, 1)
         self.pushButton_multi = QtWidgets.QPushButton(Calculator)
         self.pushButton_multi.setObjectName("pushButton_multi")
-        self.pushButton_multi.setStyleSheet("background-color : silver")
+        self.pushButton_multi.setStyleSheet("background-color : gray")
         self.gridLayout.addWidget(self.pushButton_multi, 3, 3, 1, 1)
         self.pushButton_2 = QtWidgets.QPushButton(Calculator)
         self.pushButton_2.setObjectName("pushButton_2")
         self.gridLayout.addWidget(self.pushButton_2, 4, 1, 1, 1)
         self.pushButton_plus = QtWidgets.QPushButton(Calculator)
         self.pushButton_plus.setObjectName("pushButton_plus")
-        self.pushButton_plus.setStyleSheet("background-color : silver")
+        self.pushButton_plus.setStyleSheet("background-color : gray")
         self.gridLayout.addWidget(self.pushButton_plus, 5, 3, 1, 1)
         self.pushButton_0 = QtWidgets.QPushButton(Calculator)
         self.pushButton_0.setObjectName("pushButton_0")
         self.gridLayout.addWidget(self.pushButton_0, 5, 0, 1, 1)
         self.pushButton_divide = QtWidgets.QPushButton(Calculator)
         self.pushButton_divide.setObjectName("pushButton_divide")
-        self.pushButton_divide.setStyleSheet("background-color : silver")
+        self.pushButton_divide.setStyleSheet("background-color : gray")
         self.gridLayout.addWidget(self.pushButton_divide, 2, 3, 1, 1)
         self.pushButton_equal = QtWidgets.QPushButton(Calculator)
         self.pushButton_equal.setObjectName("pushButton_equal")
@@ -71,7 +74,7 @@ class Ui_Calculator(object):
         self.gridLayout.addWidget(self.pushButton_equal, 6, 0, 1, 4)
         self.pushButton_C = QtWidgets.QPushButton(Calculator)
         self.pushButton_C.setObjectName("pushButton_C")
-        self.pushButton_C.setStyleSheet("background-color : coral")
+        self.pushButton_C.setStyleSheet("background-color : firebrick")
         self.gridLayout.addWidget(self.pushButton_C, 5, 2, 1, 1)
         self.user_edit = QtWidgets.QLineEdit(Calculator)
         self.user_edit.setText("")
@@ -112,8 +115,6 @@ class Ui_Calculator(object):
         self.pushButton_8.clicked.connect(partial(self.push_button, self.pushButton_8.text()))
         self.pushButton_9.clicked.connect(partial(self.push_button, self.pushButton_9.text()))
 
-        self.user_edit.textChanged.connect(self.test)
-
     def push_button(self, text):
 
         if text == 'C':
@@ -121,24 +122,33 @@ class Ui_Calculator(object):
         elif text == '=':
             try:
                 result = eval(self.user_edit.text())
-                self.result.setText(f"{self.user_edit.text()} = {result}")
-                self.user_edit.setText('')
-            except:
+                self.result.setText(f"{self.user_edit.text()} = {float(result)}")
+                self.user_edit.setText(f'{result}')
+            except ZeroDivisionError as e:
                 msg = QMessageBox()
                 msg.setWindowTitle("Error")
-                msg.setText("Something went wrong! Try again")
+                msg.setText(f"Zero Division Error: You can't divide by 0")
+                msg.setIcon(QMessageBox.Critical)
+                msg.setStandardButtons(QMessageBox.Ok)
+                x = msg.exec_()
+            except SyntaxError as e:
+                msg = QMessageBox()
+                msg.setWindowTitle("Error")
+                msg.setText(f"Syntax Error! Check you expression")
+                msg.setIcon(QMessageBox.Critical)
+                msg.setStandardButtons(QMessageBox.Ok)
+                x = msg.exec_()
+            except Exception as e:
+                msg = QMessageBox()
+                msg.setWindowTitle("Error")
+                msg.setText(f"Something went wrong!")
                 msg.setIcon(QMessageBox.Critical)
                 msg.setStandardButtons(QMessageBox.Ok)
                 x = msg.exec_()
 
         else:
             screen = self.user_edit.text()
-            self.user_edit.setText(screen+text)
-
-
-
-    def test(self):
-        print(self.user_edit.text())
+            self.user_edit.setText(screen + text)
 
     def retranslateUi(self, Calculator):
         _translate = QtCore.QCoreApplication.translate
@@ -164,7 +174,31 @@ class Ui_Calculator(object):
 
 if __name__ == "__main__":
     import sys
+
     app = QtWidgets.QApplication(sys.argv)
+
+    app.setStyle("Fusion")
+
+    dark_palette = QPalette()
+
+    dark_palette.setColor(QPalette.Window, QColor(53, 53, 53))
+    dark_palette.setColor(QPalette.WindowText, Qt.white)
+    dark_palette.setColor(QPalette.Base, QColor(25, 25, 25))
+    dark_palette.setColor(QPalette.AlternateBase, QColor(53, 53, 53))
+    dark_palette.setColor(QPalette.ToolTipBase, Qt.white)
+    dark_palette.setColor(QPalette.ToolTipText, Qt.white)
+    dark_palette.setColor(QPalette.Text, Qt.white)
+    dark_palette.setColor(QPalette.Button, QColor(53, 53, 53))
+    dark_palette.setColor(QPalette.ButtonText, Qt.white)
+    dark_palette.setColor(QPalette.BrightText, Qt.red)
+    dark_palette.setColor(QPalette.Link, QColor(42, 130, 218))
+    dark_palette.setColor(QPalette.Highlight, QColor(42, 130, 218))
+    dark_palette.setColor(QPalette.HighlightedText, Qt.black)
+
+    app.setPalette(dark_palette)
+
+    app.setStyleSheet("QToolTip { color: #ffffff; background-color: #2a82da; border: 1px solid white; }")
+
     Calculator = QtWidgets.QWidget()
     ui = Ui_Calculator()
     ui.setupUi(Calculator)
